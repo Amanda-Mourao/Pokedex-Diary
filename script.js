@@ -19,7 +19,7 @@ const fetchPokemon = async (id) => {
 
     // Umwandlung der Antwort in JSON-Format
     const pokemon = await response.json();
-
+   console.log(pokemon);
     return pokemon; //Daten Weiterverarbeiten
   } catch (error) {
     //7Wenn try nicht klappt dann hier weietr
@@ -67,6 +67,19 @@ const displayPokemons = async () => {
         pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
       pokemonName.classList.add("text-xl", "font-bold", "mb-2");
 
+
+      // Erstellen und Konfigurieren des Größe
+      const pokemonHeight = document.createElement("h2");
+      pokemonHeight.textContent =
+        `${pokemon.height/10} m`;
+      pokemonHeight.classList.add("text-xl", "font-bold", "mb-2");
+
+      // Erstellen und Konfigurieren des Gewicht
+      const pokemonWeight = document.createElement("h2");
+      pokemonWeight.textContent =
+        `${pokemon.weight/10} kg`;
+      pokemonWeight.classList.add("text-xl", "font-bold", "mb-2");
+
       // Erstellen und Konfigurieren des Typen-Elements
       // Extrahiert alle Typen des Pokemons und verbindet sie mit Komma
       const pokemonInfo = document.createElement("p");
@@ -75,9 +88,47 @@ const displayPokemons = async () => {
         .join(", ")}`;
       pokemonInfo.classList.add("text-gray-600");
 
+      // Erstellen und Konfigurieren des Abilities-Elements
+      const pokemonAbility = document.createElement("p");
+      pokemonAbility.textContent = `Abilities: ${pokemon.abilities
+        .map((abilityInfo) => abilityInfo.ability.name)
+        .join(", ")}`;
+        pokemonAbility.classList.add("text-gray-600");
+
+
+        // Erstellen und Konfigurieren des HP-Elements
+      const pokemonHP = document.createElement("p");
+      pokemonHP.textContent = `HP: ${pokemon.stats
+        .map((HPInfo) => HPInfo.base_stat)
+        .slice(0,1)}`;
+        pokemonHP.classList.add("text-gray-600");
+
+        // Erstellen und Konfigurieren des Attack-Elements
+        const pokemonAt = document.createElement("p");
+        pokemonAt.textContent = `Attack: ${pokemon.stats
+          .map((HPInfo) => HPInfo.base_stat)
+          .slice(1,2)}`;
+          pokemonAt.classList.add("text-gray-600");
+
+            // Erstellen und Konfigurieren des Defense-Elements
+        const pokemonDe = document.createElement("p");
+        pokemonDe.textContent = `Defense: ${pokemon.stats
+          .map((HPInfo) => HPInfo.base_stat)
+          .slice(2,3)}`;
+          pokemonDe.classList.add("text-gray-600");
+
       // Hinzufügen aller Elemente zur Pokemon-Karte
-      pokemonCard.appendChild(pokemonImage);
       pokemonCard.appendChild(pokemonName);
+      pokemonCard.appendChild(pokemonHP);
+      pokemonCard.appendChild(pokemonImage);
+      pokemonCard.appendChild(pokemonAt);
+      pokemonCard.appendChild(pokemonDe);
+      pokemonCard.appendChild(pokemonHeight);
+      pokemonCard.appendChild(pokemonWeight);
+      pokemonCard.appendChild(pokemonAbility);
+      
+      
+      
       pokemonCard.appendChild(pokemonInfo);
 
       // Hinzufügen der fertigen Karte zum Container
