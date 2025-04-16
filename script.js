@@ -19,7 +19,7 @@ const fetchPokemon = async (id) => {
 
     // Umwandlung der Antwort in JSON-Format
     const pokemon = await response.json();
-   console.log(pokemon);
+    console.log(pokemon);
     return pokemon; //Daten Weiterverarbeiten
   } catch (error) {
     //7Wenn try nicht klappt dann hier weietr
@@ -40,18 +40,32 @@ const displayPokemons = async () => {
 
     if (pokemon) {
       // Erstellen einer Karte für das Pokemon
-      const pokemonCard = document.createElement("div");
-      // Hinzufügen von Tailwind CSS-Klassen für das Styling der Karte in dem Div Container
-      pokemonCard.classList.add(
-        "bg-white",
-        "rounded-lg",
-        "shadow-md",
-        "p-4",
-        "flex",
-        "flex-col",
-        "items-center",
-        "text-center"
-      );
+      const header = document.createElement("div");
+      header.classList.add("w-full", "flex", "justify-between", "items-center", "mb-2");
+
+      // Erstellen und Konfigurieren des Namens-Elements mit Großschreibung des ersten Buchstabens
+      const pokemonName = document.createElement("h2");
+      pokemonName.textContent =
+        pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
+      pokemonName.classList.add("text-xl", "font-bold", "mb-2");
+
+      // Erstellen und Konfigurieren des HP-Elements
+      const pokemonHP = document.createElement("p");
+      pokemonHP.textContent = `HP: ${pokemon.stats
+        .map((HPInfo) => HPInfo.base_stat)
+        .slice(0, 1)}`;
+      pokemonHP.classList.add("text-gray-600");
+
+      header.appendChild(pokemonName);
+      header.appendChild(pokemonHP);
+
+      // Erstellen und Konfigurieren des Typen-Elements
+      // Extrahiert alle Typen des Pokemons und verbindet sie mit Komma
+      const pokemonInfo = document.createElement("p");
+      pokemonInfo.textContent = `Types: ${pokemon.types
+        .map((typeInfo) => typeInfo.type.name)
+        .join(", ")}`;
+      pokemonInfo.classList.add("text-gray-600"); 
 
       // Erstellen und Konfigurieren des Bild-Elements
       const pokemonImage = document.createElement("img");
@@ -61,74 +75,48 @@ const displayPokemons = async () => {
       pokemonImage.alt = pokemon.name;
       pokemonImage.classList.add("mb-4");
 
-      // Erstellen und Konfigurieren des Namens-Elements mit Großschreibung des ersten Buchstabens
-      const pokemonName = document.createElement("h2");
-      pokemonName.textContent =
-        pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
-      pokemonName.classList.add("text-xl", "font-bold", "mb-2");
-
+         // Erstellen und Konfigurieren des Attack-Elements
+         const pokemonAt = document.createElement("p");
+         pokemonAt.textContent = `Attack: ${pokemon.stats
+           .map((HPInfo) => HPInfo.base_stat)
+           .slice(1, 2)}`;
+         pokemonAt.classList.add("text-gray-600");
+   
+         // Erstellen und Konfigurieren des Defense-Elements
+         const pokemonDe = document.createElement("p");
+         pokemonDe.textContent = `Defense: ${pokemon.stats
+           .map((HPInfo) => HPInfo.base_stat)
+           .slice(2, 3)}`;
+         pokemonDe.classList.add("text-gray-600");
 
       // Erstellen und Konfigurieren des Größe
       const pokemonHeight = document.createElement("h2");
       pokemonHeight.textContent =
-        `${pokemon.height/10} m`;
+        `${pokemon.height / 10} m`;
       pokemonHeight.classList.add("text-xl", "font-bold", "mb-2");
 
       // Erstellen und Konfigurieren des Gewicht
       const pokemonWeight = document.createElement("h2");
       pokemonWeight.textContent =
-        `${pokemon.weight/10} kg`;
+        `${pokemon.weight / 10} kg`;
       pokemonWeight.classList.add("text-xl", "font-bold", "mb-2");
-
-      // Erstellen und Konfigurieren des Typen-Elements
-      // Extrahiert alle Typen des Pokemons und verbindet sie mit Komma
-      const pokemonInfo = document.createElement("p");
-      pokemonInfo.textContent = `Types: ${pokemon.types
-        .map((typeInfo) => typeInfo.type.name)
-        .join(", ")}`;
-      pokemonInfo.classList.add("text-gray-600");
 
       // Erstellen und Konfigurieren des Abilities-Elements
       const pokemonAbility = document.createElement("p");
       pokemonAbility.textContent = `Abilities: ${pokemon.abilities
         .map((abilityInfo) => abilityInfo.ability.name)
         .join(", ")}`;
-        pokemonAbility.classList.add("text-gray-600");
-
-
-        // Erstellen und Konfigurieren des HP-Elements
-      const pokemonHP = document.createElement("p");
-      pokemonHP.textContent = `HP: ${pokemon.stats
-        .map((HPInfo) => HPInfo.base_stat)
-        .slice(0,1)}`;
-        pokemonHP.classList.add("text-gray-600");
-
-        // Erstellen und Konfigurieren des Attack-Elements
-        const pokemonAt = document.createElement("p");
-        pokemonAt.textContent = `Attack: ${pokemon.stats
-          .map((HPInfo) => HPInfo.base_stat)
-          .slice(1,2)}`;
-          pokemonAt.classList.add("text-gray-600");
-
-            // Erstellen und Konfigurieren des Defense-Elements
-        const pokemonDe = document.createElement("p");
-        pokemonDe.textContent = `Defense: ${pokemon.stats
-          .map((HPInfo) => HPInfo.base_stat)
-          .slice(2,3)}`;
-          pokemonDe.classList.add("text-gray-600");
+      pokemonAbility.classList.add("text-gray-600");
 
       // Hinzufügen aller Elemente zur Pokemon-Karte
-      pokemonCard.appendChild(pokemonName);
-      pokemonCard.appendChild(pokemonHP);
-      pokemonCard.appendChild(pokemonImage);
       pokemonCard.appendChild(pokemonAt);
       pokemonCard.appendChild(pokemonDe);
       pokemonCard.appendChild(pokemonHeight);
       pokemonCard.appendChild(pokemonWeight);
       pokemonCard.appendChild(pokemonAbility);
-      
-      
-      
+
+
+
       pokemonCard.appendChild(pokemonInfo);
 
       // Hinzufügen der fertigen Karte zum Container
