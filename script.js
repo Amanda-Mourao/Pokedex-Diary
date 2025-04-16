@@ -78,7 +78,7 @@ const displayPokemons = async () => {
       // Erstellen und Konfigurieren des Typen-Elements
       // Extrahiert alle Typen des Pokemons und verbindet sie mit Komma
       const pokemonInfo = document.createElement("p");
-      pokemonInfo.textContent = `Types: ${pokemon.types
+      pokemonInfo.textContent = `Type: ${pokemon.types
         .map((typeInfo) => typeInfo.type.name)
         .join(", ")}`;
       pokemonInfo.classList.add("text-gray-600");
@@ -86,13 +86,14 @@ const displayPokemons = async () => {
       // Erstellen und Konfigurieren des Bild-Elements
       const pokemonImage = document.createElement("img");
       pokemonImage.src = pokemon.sprites.front_default;
+
       // Alternative Bildquelle (auskommentiert)
       // pokemonImage.src = pokemon.sprites.other.showdown.front_default;
       pokemonImage.alt = pokemon.name;
       pokemonImage.classList.add("mb-4");
 
       const atde = document.createElement("div");
-      atde.classList.add("w-full", "flex", "justify-center", "items-center", "mb-2");
+      atde.classList.add("w-full", "flex", "justify-center", "gap-1", "items-center", "mb-2", "text-xs");
 
       // Erstellen und Konfigurieren des Attack-Elements
       const pokemonAt = document.createElement("p");
@@ -101,32 +102,30 @@ const displayPokemons = async () => {
         .slice(1, 2)}`;
       pokemonAt.classList.add("text-gray-600");
 
-
       // Erstellen und Konfigurieren des Defense-Elements
       const pokemonDe = document.createElement("p");
-      pokemonDe.textContent = `|Defense: ${pokemon.stats
+      pokemonDe.textContent = `| Defense: ${pokemon.stats
         .map((HPInfo) => HPInfo.base_stat)
         .slice(2, 3)}`;
       pokemonDe.classList.add("text-gray-600");
-
 
       atde.appendChild(pokemonAt);
       atde.appendChild(pokemonDe);
 
       const hewe = document.createElement("div");
-      hewe.classList.add("w-full", "flex", "justify-center", "items-center", "mb-2");
+      hewe.classList.add("w-full", "flex", "justify-center", "gap-1", "items-center", "mb-5", "text-xs");
 
       // Erstellen und Konfigurieren des Größe
       const pokemonHeight = document.createElement("h2");
       pokemonHeight.textContent =
-        `${pokemon.height / 10} m`;
-      pokemonHeight.classList.add("text-xl", "mb-2");
+        `Height: ${pokemon.height / 10}m`;
+      pokemonHeight.classList.add("text-gray-600");
 
       // Erstellen und Konfigurieren des Gewicht
       const pokemonWeight = document.createElement("h2");
       pokemonWeight.textContent =
-        `|${pokemon.weight / 10} kg`;
-      pokemonWeight.classList.add("text-xl", "mb-2");
+        `| Weight: ${pokemon.weight / 10}kg`;
+      pokemonWeight.classList.add("text-gray-600");
 
       hewe.appendChild(pokemonHeight);
       hewe.appendChild(pokemonWeight);
