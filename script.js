@@ -2,7 +2,7 @@
 
 // Referenz zum Container-Element, in dem die Pokemon-Karten angezeigt werden
 const pokemonContainer = document.getElementById("pokemon-container");
-
+const abilityListe = document.getElementById("liste");
 /**
  * Asynchrone Funktion zum Abrufen von Pokemon-Daten von der PokeAPI
  * id - Die ID des abzurufenden Pokemons
@@ -54,7 +54,7 @@ const displayPokemons = async () => {
       pokemonHP.textContent = `HP: ${pokemon.stats
         .map((HPInfo) => HPInfo.base_stat)
         .slice(0, 1)}`;
-      pokemonHP.classList.add("text-gray-600");
+      pokemonHP.classList.add("text-red-600");
 
       header.appendChild(pokemonName);
       header.appendChild(pokemonHP);
@@ -130,19 +130,38 @@ const displayPokemons = async () => {
       hewe.appendChild(pokemonHeight);
       hewe.appendChild(pokemonWeight);
 
-      // Erstellen und Konfigurieren des Abilities-Elements
-      const pokemonAbility = document.createElement("p");
-      pokemonAbility.textContent = `Abilities: ${pokemon.abilities
-        .map((abilityInfo) => abilityInfo.ability.name)
-        .join(", ")}`;
-      pokemonAbility.classList.add("text-gray-600");
+      const abilityWrapper = document.createElement("div");
+      abilityWrapper.classList.add("w-full", "text-left", "mt-2");
+      
+      // Titel der Liste
+      const titel = document.createElement("span");
+      titel.classList.add("font-bold", "block", "mb-1", "text-left", "w-full"); // block sorgt dafür, dass es über der Liste steht
+      titel.textContent = "Abilities:";
+      
+      // UL-Element für die Liste
+      const abilityListe = document.createElement("ul");
+      abilityListe.classList.add("text-gray-600", "list-none", "text-left");
+      
+      // abilities durchgehen und je eine LI machen
+      pokemon.abilities.forEach((abilityInfo) => {
+        const li = document.createElement("li");
+        li.textContent = `- ${abilityInfo.ability.name}`;
+        li.classList.add("mb-1");
+        abilityListe.appendChild(li);
+      });
+      
+      // Zusammenfügen
+      abilityWrapper.appendChild(titel);
+      abilityWrapper.appendChild(abilityListe);
+      
 
       // Hinzufügen aller Elemente zur Pokemon-Karte
       pokemonCard.appendChild(pokemonInfo);
       pokemonCard.appendChild(pokemonImage);
       pokemonCard.appendChild(atde);
       pokemonCard.appendChild(hewe);
-      pokemonCard.appendChild(pokemonAbility);
+      pokemonCard.appendChild(titel);
+      pokemonCard.appendChild(abilityWrapper);
 
       // Hinzufügen der fertigen Karte zum Container
       pokemonContainer.appendChild(pokemonCard);
