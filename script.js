@@ -3,6 +3,7 @@
 // Referenz zum Container-Element, in dem die Pokemon-Karten angezeigt werden
 const pokemonContainer = document.getElementById("pokemon-container");
 const abilityListe = document.getElementById("liste");
+let allPokemons = [];
 /**
  * Asynchrone Funktion zum Abrufen von Pokemon-Daten von der PokeAPI
  * id - Die ID des abzurufenden Pokemons
@@ -39,134 +40,119 @@ const displayPokemons = async () => {
     const pokemon = await fetchPokemon(i);
 
     if (pokemon) {
+      allPokemons.push(pokemon);
       // Erstellen einer Karte für das Pokemon
-      const header = document.createElement("div");
-      header.classList.add("w-full", "flex", "justify-between", "items-center", "mb-2");
-
-      // Erstellen und Konfigurieren des Namens-Elements mit Großschreibung des ersten Buchstabens
-      const pokemonName = document.createElement("h2");
-      pokemonName.textContent =
-        pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
-      pokemonName.classList.add("text-xl", "font-bold", "mb-2");
-
-      // Erstellen und Konfigurieren des HP-Elements
-      const pokemonHP = document.createElement("p");
-      pokemonHP.textContent = `HP: ${pokemon.stats
-        .map((HPInfo) => HPInfo.base_stat)
-        .slice(0, 1)}`;
-      pokemonHP.classList.add("text-red-600");
-
-      header.appendChild(pokemonName);
-      header.appendChild(pokemonHP);
-
-      // Erstellen einer Karte für das Pokemon
-      const pokemonCard = document.createElement("div");
-      // Hinzufügen von Tailwind CSS-Klassen für das Styling der Karte in dem Div Container
-      pokemonCard.classList.add(
-        "bg-white",
-        "rounded-lg",
-        "shadow-md",
-        "p-4",
-        "flex",
-        "flex-col",
-        "items-center",
-        "text-center"
-      );
-
-      pokemonCard.appendChild(header)
-
-      // Erstellen und Konfigurieren des Typen-Elements
-      // Extrahiert alle Typen des Pokemons und verbindet sie mit Komma
-      const pokemonInfo = document.createElement("p");
-      pokemonInfo.textContent = `Type: ${pokemon.types
-        .map((typeInfo) => typeInfo.type.name)
-        .join(", ")}`;
-      pokemonInfo.classList.add("text-gray-600");
-
-      // Erstellen und Konfigurieren des Bild-Elements
-      const pokemonImage = document.createElement("img");
-      pokemonImage.src = pokemon.sprites.front_default;
-
-      // Alternative Bildquelle (auskommentiert)
-      // pokemonImage.src = pokemon.sprites.other.showdown.front_default;
-      pokemonImage.alt = pokemon.name;
-      pokemonImage.classList.add("mb-4");
-
-      const atde = document.createElement("div");
-      atde.classList.add("w-full", "flex", "justify-center", "gap-1", "items-center", "mb-2", "text-xs");
-
-      // Erstellen und Konfigurieren des Attack-Elements
-      const pokemonAt = document.createElement("p");
-      pokemonAt.textContent = `Attack: ${pokemon.stats
-        .map((HPInfo) => HPInfo.base_stat)
-        .slice(1, 2)}`;
-      pokemonAt.classList.add("text-gray-600");
-
-      // Erstellen und Konfigurieren des Defense-Elements
-      const pokemonDe = document.createElement("p");
-      pokemonDe.textContent = `| Defense: ${pokemon.stats
-        .map((HPInfo) => HPInfo.base_stat)
-        .slice(2, 3)}`;
-      pokemonDe.classList.add("text-gray-600");
-
-      atde.appendChild(pokemonAt);
-      atde.appendChild(pokemonDe);
-
-      const hewe = document.createElement("div");
-      hewe.classList.add("w-full", "flex", "justify-center", "gap-1", "items-center", "mb-5", "text-xs");
-
-      // Erstellen und Konfigurieren des Größe
-      const pokemonHeight = document.createElement("h2");
-      pokemonHeight.textContent =
-        `Height: ${pokemon.height / 10}m`;
-      pokemonHeight.classList.add("text-gray-600");
-
-      // Erstellen und Konfigurieren des Gewicht
-      const pokemonWeight = document.createElement("h2");
-      pokemonWeight.textContent =
-        `| Weight: ${pokemon.weight / 10}kg`;
-      pokemonWeight.classList.add("text-gray-600");
-
-      hewe.appendChild(pokemonHeight);
-      hewe.appendChild(pokemonWeight);
-
-      const abilityWrapper = document.createElement("div");
-      abilityWrapper.classList.add("w-full", "text-left", "mt-2");
-      
-      // Titel der Liste
-      const titel = document.createElement("span");
-      titel.classList.add("font-bold", "block", "mb-1", "text-left", "w-full"); // block sorgt dafür, dass es über der Liste steht
-      titel.textContent = "Abilities:";
-      
-      // UL-Element für die Liste
-      const abilityListe = document.createElement("ul");
-      abilityListe.classList.add("text-gray-600", "list-none", "text-left");
-      
-      // abilities durchgehen und je eine LI machen
-      pokemon.abilities.forEach((abilityInfo) => {
-        const li = document.createElement("li");
-        li.textContent = `- ${abilityInfo.ability.name}`;
-        li.classList.add("mb-1");
-        abilityListe.appendChild(li);
-      });
-      
-      // Zusammenfügen
-      abilityWrapper.appendChild(titel);
-      abilityWrapper.appendChild(abilityListe);
-      
-
-      // Hinzufügen aller Elemente zur Pokemon-Karte
-      pokemonCard.appendChild(pokemonInfo);
-      pokemonCard.appendChild(pokemonImage);
-      pokemonCard.appendChild(atde);
-      pokemonCard.appendChild(hewe);
-      pokemonCard.appendChild(titel);
-      pokemonCard.appendChild(abilityWrapper);
-
-      // Hinzufügen der fertigen Karte zum Container
-      pokemonContainer.appendChild(pokemonCard);
+      createPokemonCard(pokemon)
     }
   }
 };
+
+
+const searchInput = document.getElementById("search");
+
+searchInput.addEventListener("input", (event) => {
+  const searchTerm = event.target.value.toLowerCase();
+
+  // Filtere Pokémon nach Name
+  const filteredPokemons = allPokemons.filter(pokemon =>
+    pokemon.name.toLowerCase().includes(searchTerm)
+  );
+
+  // Aktuelle Karten löschen
+  pokemonContainer.innerHTML = "";
+
+  // Gefilterte neu anzeigen
+  filteredPokemons.forEach(pokemon => {
+    createPokemonCard(pokemon);
+  });
+});
+
+
+function createPokemonCard(pokemon) {
+  const header = document.createElement("div");
+  header.classList.add("w-full", "flex", "justify-between", "items-center", "mb-2");
+
+  const pokemonName = document.createElement("h2");
+  pokemonName.textContent = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
+  pokemonName.classList.add("text-xl", "font-bold", "mb-2");
+
+  const pokemonHP = document.createElement("p");
+  pokemonHP.textContent = `HP: ${pokemon.stats[0].base_stat}`;
+  pokemonHP.classList.add("text-red-600");
+
+  header.appendChild(pokemonName);
+  header.appendChild(pokemonHP);
+
+  const pokemonCard = document.createElement("div");
+  pokemonCard.classList.add(
+    "bg-white", "rounded-lg", "shadow-md", "p-4", "flex", "flex-col", "items-center", "text-center"
+  );
+  pokemonCard.appendChild(header);
+
+  const pokemonInfo = document.createElement("p");
+  pokemonInfo.textContent = `Type: ${pokemon.types.map((typeInfo) => typeInfo.type.name).join(", ")}`;
+  pokemonInfo.classList.add("text-gray-600");
+
+  const pokemonImage = document.createElement("img");
+  pokemonImage.src = pokemon.sprites.front_default;
+  pokemonImage.alt = pokemon.name;
+  pokemonImage.classList.add("mb-4");
+
+  const atde = document.createElement("div");
+  atde.classList.add("w-full", "flex", "justify-center", "gap-1", "items-center", "mb-2", "text-xs");
+
+  const pokemonAt = document.createElement("p");
+  pokemonAt.textContent = `Attack: ${pokemon.stats[1].base_stat}`;
+  pokemonAt.classList.add("text-gray-600");
+
+  const pokemonDe = document.createElement("p");
+  pokemonDe.textContent = `| Defense: ${pokemon.stats[2].base_stat}`;
+  pokemonDe.classList.add("text-gray-600");
+
+  atde.appendChild(pokemonAt);
+  atde.appendChild(pokemonDe);
+
+  const hewe = document.createElement("div");
+  hewe.classList.add("w-full", "flex", "justify-center", "gap-1", "items-center", "mb-5", "text-xs");
+
+  const pokemonHeight = document.createElement("h2");
+  pokemonHeight.textContent = `Height: ${pokemon.height / 10}m`;
+  pokemonHeight.classList.add("text-gray-600");
+
+  const pokemonWeight = document.createElement("h2");
+  pokemonWeight.textContent = `| Weight: ${pokemon.weight / 10}kg`;
+  pokemonWeight.classList.add("text-gray-600");
+
+  hewe.appendChild(pokemonHeight);
+  hewe.appendChild(pokemonWeight);
+
+  const abilityWrapper = document.createElement("div");
+  abilityWrapper.classList.add("w-full", "text-left", "mt-2");
+
+  const titel = document.createElement("span");
+  titel.classList.add("font-bold", "block", "mb-1", "text-left", "w-full");
+  titel.textContent = "Abilities:";
+
+  const abilityListe = document.createElement("ul");
+  abilityListe.classList.add("text-gray-600", "list-none", "text-left");
+
+  pokemon.abilities.forEach((abilityInfo) => {
+    const li = document.createElement("li");
+    li.textContent = `- ${abilityInfo.ability.name}`;
+    li.classList.add("mb-1");
+    abilityListe.appendChild(li);
+  });
+
+  abilityWrapper.appendChild(titel);
+  abilityWrapper.appendChild(abilityListe);
+
+  pokemonCard.appendChild(pokemonInfo);
+  pokemonCard.appendChild(pokemonImage);
+  pokemonCard.appendChild(atde);
+  pokemonCard.appendChild(hewe);
+  pokemonCard.appendChild(abilityWrapper);
+
+  pokemonContainer.appendChild(pokemonCard);
+}
 
 displayPokemons();
