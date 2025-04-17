@@ -69,6 +69,9 @@ searchInput.addEventListener("input", (event) => {
 
 
 function createPokemonCard(pokemon) {
+
+
+  
   const header = document.createElement("div");
   header.classList.add("w-full", "flex", "justify-between", "items-center", "mb-2");
 
@@ -87,11 +90,57 @@ function createPokemonCard(pokemon) {
   pokemonCard.classList.add(
     "bg-white", "rounded-lg", "shadow-md", "p-4", "flex", "flex-col", "items-center", "text-center"
   );
+
+
+
+
+  
   pokemonCard.appendChild(header);
 
-  const pokemonInfo = document.createElement("p");
-  pokemonInfo.textContent = `Type: ${pokemon.types.map((typeInfo) => typeInfo.type.name).join(", ")}`;
-  pokemonInfo.classList.add("text-gray-600");
+ // --- Typen-Wrapper (Type + Stern in einer Zeile) ---
+const typenWrapper = document.createElement("div");
+typenWrapper.classList.add("w-full", "flex", "justify-between", "items-center", "text-left", "mb-2");
+
+// Typen-Text
+const typenText = document.createElement("p");
+typenText.textContent = `Type: ${pokemon.types.map((typeInfo) => typeInfo.type.name).join(", ")}`;
+typenText.classList.add("text-gray-600");
+
+// Favoriten-Stern
+const favStar = document.createElement("span");
+favStar.textContent = "★";
+favStar.classList.add("cursor-pointer", "text-xl");
+
+// Favoriten-Logik
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+if (favorites.includes(pokemon.id)) {
+  favStar.classList.add("text-yellow-500");
+} else {
+  favStar.classList.add("text-gray-400");
+}
+
+favStar.addEventListener("click", () => {
+  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+  if (favorites.includes(pokemon.id)) {
+    favorites = favorites.filter(id => id !== pokemon.id);
+    favStar.classList.replace("text-yellow-500", "text-gray-400");
+  } else {
+    favorites.push(pokemon.id);
+    favStar.classList.replace("text-gray-400", "text-yellow-500");
+  }
+
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+});
+
+// Zusammenbauen
+typenWrapper.appendChild(typenText);
+typenWrapper.appendChild(favStar);
+
+// In die Karte einfügen
+
+
+
 
   const pokemonImage = document.createElement("img");
   pokemonImage.src = pokemon.sprites.front_default;
@@ -146,7 +195,7 @@ function createPokemonCard(pokemon) {
   abilityWrapper.appendChild(titel);
   abilityWrapper.appendChild(abilityListe);
 
-  pokemonCard.appendChild(pokemonInfo);
+  pokemonCard.appendChild(typenWrapper);
   pokemonCard.appendChild(pokemonImage);
   pokemonCard.appendChild(atde);
   pokemonCard.appendChild(hewe);
