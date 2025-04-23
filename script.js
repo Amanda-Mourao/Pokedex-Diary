@@ -47,16 +47,18 @@ const displayPokemons = async () => {
   }
 };
 
-
 const searchInput = document.getElementById("search");
+const searchButton = document.getElementById("searchButton");
 
-searchInput.addEventListener("input", (event) => {
-  const searchTerm = event.target.value.toLowerCase();
+searchButton.addEventListener("click", () => {
+  const searchTerm = searchInput.value.toLowerCase().trim();
 
-  // Filtere Pokémon nach Name
-  const filteredPokemons = allPokemons.filter(pokemon =>
-    pokemon.name.toLowerCase().includes(searchTerm)
-  );
+  const filteredPokemons = allPokemons.filter(pokemon => {
+    return (
+      pokemon.name.toLowerCase().includes(searchTerm) ||
+      pokemon.id.toString() === searchTerm
+    );
+  });
 
   // Aktuelle Karten löschen
   pokemonContainer.innerHTML = "";
@@ -66,6 +68,7 @@ searchInput.addEventListener("input", (event) => {
     createPokemonCard(pokemon);
   });
 });
+
 
 
 function createPokemonCard(pokemon) {
